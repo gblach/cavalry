@@ -1,0 +1,12 @@
+# Build and run first container using Dockerfile.
+CONTAINER appcont
+
+# Build second container using Dockerfile.test
+# and run it with env variable CONNECT_TO set to http://localhost:9000.
+CONTAINER testcont
+FILE Dockerfile.test
+ENV CONNECT_TO=http://localhost:9000
+
+# This test should fail because the server is listening on port 8000,
+# but the test will try to connect to port 9000.
+EXEC testcont python3 -m unittest discover
