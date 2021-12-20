@@ -114,8 +114,10 @@ func loadfile(cavalryfile string) {
 }
 
 func makeplan() {
+	engine_base := path.Base(arg_engine)
+
 	format := ""
-	if path.Base(arg_engine) == "podman" {
+	if engine_base == "podman" {
 		format = " --format " + arg_format
 	}
 
@@ -146,9 +148,19 @@ func makeplan() {
 	if !arg_nopush {
 		for _, container := range containers {
 			if container.push != "" {
-				command := fmt.Sprintf("%s push %s %s",
-					arg_engine, container.tag, container.push)
-				commands = append(commands, command)
+				if engine_base == "podman" {
+					command := fmt.Sprintf("%s push %s %s",
+						arg_engine, container.tag, container.push)
+					commands = append(commands, command)
+				} else {
+					command := fmt.Sprintf("%s tag %s %s",
+						arg_engine, container.tag, container.push)
+					commands = append(commands, command)
+
+					command = fmt.Sprintf("%s push %s",
+						arg_engine, container.push)
+					commands = append(commands, command)
+				}
 			}
 		}
 	}
@@ -165,6 +177,9 @@ func makeplan() {
 			if !container.keep {
 				canrmi = true
 				cleanup += " " + container.tag
+			}
+			if !arg_nopush && container.push != "" && engine_base != "podman" {
+				cleanup += " " + container.push
 			}
 		}
 		if canrmi {
