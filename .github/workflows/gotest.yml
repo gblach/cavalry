@@ -24,3 +24,15 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+
+    - name: Install
+      run: go install -v ./...
+
+    - name: Show version
+      run: cavalry -v
+
+    - name: Run cavalry on docker
+      run: cavalry -c example -e docker
+
+    - name: Run cavalry on podman
+      run: cavalry -c example -e podman
