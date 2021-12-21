@@ -35,14 +35,9 @@ func main() {
 		def_engine = path.Base(def_engine)
 	}
 
-	def_format := "docker"
-	if def_engine == "podman" {
-		def_format = "oci"
-	}
-
 	flag.StringVar(&arg_chdir, "c", ".", "Change working directory.")
 	flag.StringVar(&arg_engine, "e", def_engine, "Choose the engine: podman or docker.")
-	flag.StringVar(&arg_format, "f", def_format, "Choose the image format: oci or docker.")
+	flag.StringVar(&arg_format, "f", "", "Choose the image format: oci or docker.")
 	flag.BoolVar(&arg_nopush, "np", false, "Do not push images.")
 	flag.BoolVar(&arg_norm, "nr", false, "Do not remove containers and images.")
 	flag.BoolVar(&arg_plan, "p", false, "Show plan instead of executing them.")

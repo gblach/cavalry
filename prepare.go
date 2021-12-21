@@ -117,7 +117,7 @@ func makeplan() {
 	engine_base := path.Base(arg_engine)
 
 	format := ""
-	if engine_base == "podman" {
+	if engine_base == "podman" && arg_format != "" {
 		format = " --format " + arg_format
 	}
 
