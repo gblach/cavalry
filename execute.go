@@ -25,7 +25,7 @@ func run(args []string) int {
 	err := cmd.Run()
 
 	if err != nil {
-		fmt.Println(red+"->", err, reset, "\n")
+		fmt.Print(red+"->", err, reset, "\n\n")
 		return err.(*exec.ExitError).ExitCode()
 	}
 
