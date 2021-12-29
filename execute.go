@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
@@ -12,38 +13,38 @@ const (
 	reset = "\033[0m"
 )
 
-var commands []string
-var cleanups []string
+var commands [][]string
+var cleanups [][]string
 
-func system(command string) int {
-	cmd := exec.Command("/bin/sh", "-c", command)
+func run(args []string) int {
+	fmt.Println(white+"=>", arg_engine, strings.Join(args, " "), reset)
+
+	cmd := exec.Command(arg_engine, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
+
 	if err != nil {
-		fmt.Printf("%s-> %s%s\n", red, err, reset)
+		fmt.Println(red+"->", err, reset, "\n")
 		return err.(*exec.ExitError).ExitCode()
 	}
+
+	fmt.Println("")
 	return 0
 }
 
 func execute() {
 	var exitcode = 0
 
-	for i, command := range commands {
-		if i > 0 {
-			fmt.Println("")
-		}
-		fmt.Printf("%s=> %s%s\n", white, command, reset)
-		exitcode = system(command)
+	for _, command := range commands {
+		exitcode = run(command)
 		if exitcode != 0 {
 			break
 		}
 	}
 
 	for _, cleanup := range cleanups {
-		fmt.Printf("\n%s=> %s%s\n", white, cleanup, reset)
-		system(cleanup)
+		run(cleanup)
 	}
 
 	os.Exit(exitcode)

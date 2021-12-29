@@ -116,32 +116,35 @@ func loadfile(cavalryfile string) {
 func makeplan() {
 	engine_base := path.Base(arg_engine)
 
-	format := ""
+	format := []string{}
 	if engine_base == "podman" && arg_format != "" {
-		format = " --format " + arg_format
+		format = []string{"--format", arg_format}
 	}
 
+	network := []string{"--network", "container:" + containers[0].name}
+
 	for i, container := range containers {
-		command := fmt.Sprintf("%s build -t %s -f %s%s %s",
-			arg_engine, container.tag, container.file, format, container.dir)
+		command := []string{"build", "-t", container.tag, "-f", container.file}
+		command = append(command, format...)
+		command = append(command, container.dir)
 		commands = append(commands, command)
 
-		network := ""
-		if i > 0 {
-			network = " --network container:" + containers[0].name
-		}
-		environ := ""
+		environ := []string{}
 		for _, env := range container.env {
-			environ += fmt.Sprintf(" -e '%s'", env)
+			environ = append(environ, "-e", env)
 		}
-		command = fmt.Sprintf("%s run -dt --name %s%s%s %s",
-			arg_engine, container.name, network, environ, container.tag)
+		command = []string{"run", "-dt", "--name", container.name}
+		if i > 0 {
+			command = append(command, network...)
+		}
+		command = append(command, environ...)
+		command = append(command, container.tag)
 		commands = append(commands, command)
 	}
 
 	for _, testcase := range testcases {
-		command := fmt.Sprintf("%s exec %s %s",
-			arg_engine, getname(testcase.tag), testcase.command)
+		command := []string{"exec", getname(testcase.tag)}
+		command = append(command, strings.Fields(testcase.command)...)
 		commands = append(commands, command)
 	}
 
@@ -149,16 +152,13 @@ func makeplan() {
 		for _, container := range containers {
 			if container.push != "" {
 				if engine_base == "podman" {
-					command := fmt.Sprintf("%s push %s %s",
-						arg_engine, container.tag, container.push)
+					command := []string{"push", container.tag, container.push}
 					commands = append(commands, command)
 				} else {
-					command := fmt.Sprintf("%s tag %s %s",
-						arg_engine, container.tag, container.push)
+					command := []string{"tag", container.tag, container.push}
 					commands = append(commands, command)
 
-					command = fmt.Sprintf("%s push %s",
-						arg_engine, container.push)
+					command = []string{"push", container.push}
 					commands = append(commands, command)
 				}
 			}
@@ -167,19 +167,19 @@ func makeplan() {
 
 	if !arg_norm {
 		for i := len(containers) - 1; i >= 0; i-- {
-			cleanup := fmt.Sprintf("%s rm -f %s", arg_engine, containers[i].name)
+			cleanup := []string{"rm", "-f", containers[i].name}
 			cleanups = append(cleanups, cleanup)
 		}
 
 		canrmi := false
-		cleanup := arg_engine + " rmi"
+		cleanup := []string{"rmi"}
 		for _, container := range containers {
 			if !container.keep {
 				canrmi = true
-				cleanup += " " + container.tag
+				cleanup = append(cleanup, container.tag)
 			}
 			if !arg_nopush && container.push != "" && engine_base != "podman" {
-				cleanup += " " + container.push
+				cleanup = append(cleanup, container.push)
 			}
 		}
 		if canrmi {
@@ -190,9 +190,9 @@ func makeplan() {
 
 func showplan() {
 	for _, command := range commands {
-		fmt.Println(command)
+		fmt.Println(arg_engine, strings.Join(command, " "))
 	}
 	for _, cleanup := range cleanups {
-		fmt.Println(cleanup)
+		fmt.Println(arg_engine, strings.Join(cleanup, " "))
 	}
 }
