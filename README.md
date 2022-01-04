@@ -25,6 +25,10 @@ Cavalry checks if podman or docker is installed on the system and uses the comma
 Choose the image format: oci or docker.  
 This option is useful if you are using podman, because docker always uses the docker format.
 
+**-m &lt;email address&gt;**  
+Send an email to this address in case of failure.  
+Emails are sent using /usr/sbin/sendmail or the command pointed by SENDMAIL_CMD env variable if defined.
+
 **-h**	 
 Show help message.
 
@@ -37,6 +41,9 @@ Do not remove any images and containers built by Cavalry and keep them running.
 
 **-p**  
 Show commands that Cavalry plans to execute instead of executing them.
+
+**-ma**  
+In conjunction with the -m option, this means to always send the e-mail not only on failure.
 
 **-v**  
 Show version and exit.
