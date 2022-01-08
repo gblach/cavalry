@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -50,10 +51,13 @@ func sendmail(exitcode int) {
 		subject += fmt.Sprintf(" (fail: %d)", exitcode)
 	}
 
+	re := regexp.MustCompile("\033\\[[0-9;]+m")
+	buffer_bytes := re.ReplaceAll(buffer.Bytes(), []byte{})
+
 	cmd := exec.Command(sendmail_cmd, arg_mailto)
 	cmd.Stdin = io.MultiReader(
 		strings.NewReader(subject+"\n\n"),
-		bytes.NewReader(buffer.Bytes()))
+		bytes.NewReader(buffer_bytes))
 	cmd.Run()
 }
 
