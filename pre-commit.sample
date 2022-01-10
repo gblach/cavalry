@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# You can modify command line options for e.g. by adding -c directory
+# or -m email parameters or by removing -np parameter.
+
+cavalry -np
