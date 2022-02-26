@@ -1,0 +1,12 @@
+# Build an app in the first container using Dockerfile.build
+# and copy the binary from this container to the host.
+CONTAINER gobuildcont
+FILE Dockerfile.build
+COPY /app/example-go .
+
+# Build the second container using Dockerfile
+# which contains only the application without devtools.
+CONTAINER goappcont
+
+# Check if application is running
+EXEC gobuildcont curl http://localhost:3000/

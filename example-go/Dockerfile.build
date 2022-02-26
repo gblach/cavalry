@@ -1,0 +1,10 @@
+FROM almalinux:minimal
+MAINTAINER grzegorz@blach.pl
+
+WORKDIR /app
+COPY . .
+
+RUN microdnf upgrade
+RUN microdnf install golang
+RUN go get
+RUN go build -ldflags="-s -w"
