@@ -22,7 +22,7 @@ import (
 	"path"
 )
 
-const version = "0.2.0"
+const version = "0.3.0"
 
 var arg_chdir string
 var arg_engine string
