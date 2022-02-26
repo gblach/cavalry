@@ -62,7 +62,7 @@ A valid file should contain at least one CONTAINER and one EXEC directive.
 This directive instructs Cavalry to build new image and run the container.
 This image will be tagged with tag parameter.
 
-The following directives apply to the latest CONTAINER directive: DIR, FILE, PUSH, and KEEP.
+The following directives apply to the latest CONTAINER directive: DIR, FILE, COPY, PUSH, and KEEP.
 
 	DIR directory
 Points to the directory where the container's image is to be built.
@@ -70,6 +70,11 @@ Defaults to the current working directory.
 
 	FILE Dockerfile
 Points the Dockerfile to be used during building the container's image. The default is "Dockerfile".
+
+	COPY from to
+Points a file or a directory that will be copied from the image to the host directory.
+This directive can be useful for building apps in one container and copying them
+to the other container.
 
 	PUSH registry_addr
 Points the registry addess where image will be pushed after passing the tests.

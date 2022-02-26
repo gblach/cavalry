@@ -29,6 +29,7 @@ type container_t struct {
 	dir  string
 	file string
 	env  []string
+	copy [][]string
 	keep bool
 	push string
 }
@@ -89,6 +90,13 @@ func loadfile(cavalryfile string) {
 
 		n, _ = fmt.Sscanf(line, "FILE %s", &container.file)
 		if n > 0 {
+			continue
+		}
+
+		copy := make([]string, 2)
+		n, _ = fmt.Sscanf(line, "COPY %s %s", &copy[0], &copy[1])
+		if n > 0 {
+			container.copy = append(container.copy, copy)
 			continue
 		}
 
@@ -154,6 +162,11 @@ func makeplan() {
 		command = append(command, environ...)
 		command = append(command, container.tag)
 		commands = append(commands, command)
+
+		for _, copy := range container.copy {
+			command = []string{"cp", container.name + ":" + copy[0], copy[1]}
+			commands = append(commands, command)
+		}
 	}
 
 	for _, testcase := range testcases {
