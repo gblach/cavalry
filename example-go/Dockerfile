@@ -1,5 +1,4 @@
 FROM almalinux:minimal
-MAINTAINER grzegorz@blach.pl
 
 WORKDIR /app
 COPY example-go .
