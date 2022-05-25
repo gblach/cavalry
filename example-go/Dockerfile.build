@@ -1,9 +1,10 @@
-FROM almalinux:minimal
+FROM almalinux/8-minimal
 
 WORKDIR /app
 COPY . .
 
-RUN microdnf upgrade
-RUN microdnf install golang
-RUN go get
-RUN go build -ldflags="-s -w"
+RUN microdnf upgrade \
+	&& microdnf install golang
+
+RUN go get \
+	&& go build -ldflags="-s -w"

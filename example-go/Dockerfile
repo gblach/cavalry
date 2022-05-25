@@ -1,10 +1,7 @@
-FROM almalinux:minimal
+FROM almalinux/8-micro
 
 WORKDIR /app
 COPY example-go .
-
-RUN microdnf upgrade
-RUN microdnf clean all
 
 CMD ["./example-go"]
 

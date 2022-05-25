@@ -1,8 +1,8 @@
-FROM almalinux:minimal
+FROM almalinux/8-minimal
 
-RUN microdnf upgrade
-RUN microdnf install python39 python39-requests
-RUN microdnf clean all
+RUN microdnf upgrade \
+	&& microdnf install python39 python39-requests \
+	&& microdnf clean all
 
 COPY test_example.py .
 
