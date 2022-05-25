@@ -3,9 +3,8 @@ CONTAINER appcont
 
 # Build second container using Dockerfile.test
 # and run it with env variable CONNECT_TO set to http://localhost:8000.
+# This test should pass.
 CONTAINER testcont
 FILE Dockerfile.test
 ENV CONNECT_TO=http://localhost:8000
-
-# This test should pass.
-EXEC testcont python3 -m unittest discover
+TTY

@@ -5,3 +5,5 @@ RUN microdnf install python39 python39-requests
 RUN microdnf clean all
 
 COPY test_example.py .
+
+CMD ["python3", "-m", "unittest", "discover"]

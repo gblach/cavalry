@@ -62,7 +62,8 @@ A valid file should contain at least one CONTAINER and one EXEC directive.
 This directive instructs Cavalry to build new image and run the container.
 This image will be tagged with tag parameter.
 
-The following directives apply to the latest CONTAINER directive: DIR, FILE, COPY, PUSH, and KEEP.
+The following directives apply to the latest CONTAINER directive:
+DIR, FILE, COPY, PUSH, KEEP and TTY.
 
 	DIR directory
 Points to the directory where the container's image is to be built.
@@ -82,6 +83,10 @@ You should be logged in to the registry prior to running Cavalry.
 
 	KEEP
 Mark that the container's image cannot be removed during the cleanup step.
+
+	TTY
+Run container on a pseudo-TTY without detaching it.
+This directive can be used to run single-shot containers.
 
 	EXEC tag command
 Defines the test command to run. This command will be executed

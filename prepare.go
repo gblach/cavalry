@@ -32,6 +32,7 @@ type container_t struct {
 	copy [][]string
 	keep bool
 	push string
+	tty bool
 }
 
 type testcase_t struct {
@@ -74,7 +75,12 @@ func loadfile(cavalryfile string) {
 			if container.tag != "" {
 				containers = append(containers, container)
 			}
-			container = container_t{dir: ".", file: "Dockerfile", keep: false}
+			container = container_t{
+				dir: ".",
+				file: "Dockerfile",
+				keep: false,
+				tty: false,
+			}
 		}
 
 		n, _ := fmt.Sscanf(line, "CONTAINER %s", &container.tag)
@@ -112,6 +118,11 @@ func loadfile(cavalryfile string) {
 
 		if strings.HasPrefix(line, "ENV ") {
 			container.env = append(container.env, line[4:])
+			continue
+		}
+
+		if line == "TTY" {
+			container.tty = true
 			continue
 		}
 
@@ -155,7 +166,13 @@ func makeplan() {
 		for _, env := range container.env {
 			environ = append(environ, "-e", env)
 		}
-		command = []string{"run", "-dt", "--name", container.name}
+		command = []string{"run"}
+		if container.tty {
+			command = append(command, "-t")
+		} else {
+			command = append(command, "-dt")
+		}
+		command = append(command, "--name", container.name)
 		if i > 0 {
 			command = append(command, network...)
 		}
