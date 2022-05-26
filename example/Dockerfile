@@ -1,7 +1,7 @@
-FROM almalinux/8-minimal
+FROM almalinux/9-minimal
 
-RUN microdnf upgrade \
-	&& microdnf install python39 \
+RUN microdnf upgrade -y \
+	&& microdnf install -y python3-pip \
 	&& microdnf clean all
 
 RUN pip3 install --upgrade pip \

@@ -1,4 +1,4 @@
-FROM almalinux/8-micro
+FROM almalinux/9-micro
 
 WORKDIR /app
 COPY example-go .
